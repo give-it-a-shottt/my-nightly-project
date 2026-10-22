@@ -6,11 +6,12 @@ export function middleware(request: NextRequest) {
   // 쿠키에 access_token 팔찌가 있는지 확인
   const token = request.cookies.get("access_token")?.value;
 
-  // 팔찌 없이 /mypage 나 /admin 으로 들어가려고 하면 -> /login 화면으로 튕겨냄!
+  // 팔찌 없이 /mypage, /admin, /dashboard 로 들어가려고 하면 -> /login 화면으로 튕겨냄!
   if (
     !token &&
     (request.nextUrl.pathname.startsWith("/mypage") ||
-      request.nextUrl.pathname.startsWith("/admin"))
+      request.nextUrl.pathname.startsWith("/admin") ||
+      request.nextUrl.pathname.startsWith("/dashboard"))
   ) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -18,5 +19,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/mypage/:path*", "/admin/:path*"],
+  matcher: ["/mypage/:path*", "/admin/:path*", "/dashboard/:path*"],
 };

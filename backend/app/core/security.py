@@ -1,5 +1,8 @@
 from datetime import datetime, timedelta, timezone
+import hashlib
+import hmac
 import bcrypt
+from fastapi import Header, HTTPException, Request, status
 import jwt
 from app.core.config import settings
 
@@ -38,3 +41,23 @@ def create_refresh_token(user_id: int) -> str:
         timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     payload = {"sub": str(user_id), "type": "refresh", "exp": expire}
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+# 💡 5. [M2 추가] 웹훅 HMAC-SHA256 서명 검증 문지기 (Depends용)
+async def verify_webhook_signature(
+    request: Request,
+    x_signature: str = Header(..., description="HMAC-SHA256 hex digest"),
+) -> None:
+    # ① 가공 전 원본 바이트(bytes) 그대로 추출
+    raw_body: bytes = await request.body()
+    expected_sig = hmac.new(
+        settings.WEBHOOK_SECRET.encode("utf-8"),
+        raw_body,
+        hashlib.sha256,
+    ).hexdigest()
+    # ② 타이밍 공격 방어를 위한 상수 시간 비교
+    if not hmac.compare_digest(expected_sig, x_signature):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="위조된 웹훅 서명입니다 (Invalid HMAC signature).",
+        )

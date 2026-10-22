@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.routers import users, auth  # 상단 import에 추가
+from app.api.v1.routers import users, auth, webhooks  # 상단 import에 추가
 
 app = FastAPI(
     title="Nightly Sleep Service API",
@@ -10,7 +10,7 @@ app = FastAPI(
 
 app.include_router(users.router)
 app.include_router(auth.router)
-
+app.include_router(webhooks.router)
 
 # 3000번 포트(Next.js 프론트엔드)에서 오는 요청을 허용할 명단
 origins = [

@@ -16,7 +16,7 @@ export default function LoginPage() {
     setError("");
     try {
       await client.login(email, password);
-      router.push("/users"); // 로그인 성공 시 회원 목록(또는 마이페이지)으로 이동
+      router.push("/dashboard"); // 로그인 성공 시 수면 기록 대시보드로 바로 이동!
     } catch {
       setError("이메일 또는 비밀번호가 올바르지 않습니다. (401)");
     }

@@ -11,7 +11,8 @@ from alembic import context
 from app.core.database import Base
 from app.core.config import settings
 import app.models.user  # 모델을 import해야 Alembic이 테이블을 인식합니다
-
+import app.models.device        # 💡 M2 추가
+import app.models.sleep_record  # 💡 M2 추가
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    # 💡 M2 추가: 수면 기기 웹훅 HMAC-SHA256 서명 검증용 비밀키
+    WEBHOOK_SECRET: str = "device-webhook-secret-key-2026"
 
     class Config:
         env_file = ".env"
